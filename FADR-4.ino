@@ -19,6 +19,7 @@
 // EEprom read function - Works!
 // Cleanup - start
 // Change ints to bytes - Done!
+// EEProm cleanup - Start
 
 //#include <MIDI.h>
 #include <LedControl.h>
