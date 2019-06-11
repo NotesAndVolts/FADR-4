@@ -25,13 +25,13 @@
 #include <LedControl.h>
 #include <EEPROM.h>
 
-#define EEPROM_KEY 125
+#define EEPROM_KEY 126
 #define LED_LEVEL 2
 //MIDI_CREATE_DEFAULT_INSTANCE();
 // inputs: DIN pin, CLK pin, LOAD pin. number of chips
 LedControl mydisplay = LedControl(4, 2, 3, 1);
 
-byte memStart = 1; // Start of buttons in EEPROM
+byte memStart = 2; // Start of Faders in EEPROM
 byte bank = 0;
 int oldValue[8];
 int pins[] = {A0, A1, A2, A3, A4, A5, A6, A7};
@@ -110,7 +110,7 @@ void channelEdit() {
     }
   }
   mChan[0] = channelVal;
-
+  if (mChan[0] != EEPROM.read(1)) EEPROM.write(1, mChan[0]);
   mydisplay.setIntensity(0, 0);
   delay(100);
   mydisplay.setIntensity(0, LED_LEVEL);
@@ -328,6 +328,8 @@ void initRom() {
 }
 
 void readRom() {
+  mChan[0] = EEPROM.read(1); //Read Midi Channel
+  
   for (int bank = 0; bank < 8; bank++) {
     for (int fader = 0; fader < 8; fader++) {
       cc[bank][fader] = EEPROM.read((bank * 8) + (fader + memStart));
@@ -340,6 +342,8 @@ void initRom2() {
 
   if (EEPROM.read(0) != EEPROM_KEY) {
     EEPROM.write(0, EEPROM_KEY); // Key
+
+    EEPROM.write(1, 16); // Set Midi channel to 1
 
     for (int bank = 0; bank < 8; bank++) {
       for (int fader = 0; fader < 8; fader++) {
