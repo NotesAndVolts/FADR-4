@@ -19,7 +19,7 @@
 // EEprom read function - Works!
 // Cleanup - start
 // Change ints to bytes - Done!
-// EEProm cleanup - Start
+// EEProm cleanup - Works!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -185,6 +185,7 @@ void faderEdit(byte fader) {
   unsigned long delayMillis;
   bool toggle = true;
   byte ccVal = cc[0][fader - 1];
+  byte temp = 0;
 
   delayMillis = millis();
   while (checkButton() == 2) {
@@ -198,10 +199,12 @@ void faderEdit(byte fader) {
       val = getFaderValue(x);
       if (val < 255) {
         threeDigit(val);
+        temp = val;
         cc[0][fader - 1] = val;
       }
     }
   }
+  if (temp != EEPROM.read((fader - 1) + memStart)) EEPROM.write((fader - 1) + memStart, temp); //Write new CC to EEProm
   mydisplay.setIntensity(0, LED_LEVEL);
   return;
 }
