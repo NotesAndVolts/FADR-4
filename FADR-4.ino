@@ -20,6 +20,7 @@
 // Cleanup - start
 // Change ints to bytes - Done!
 // EEProm cleanup - Works!
+// Fix Channel issue - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -88,7 +89,7 @@ void loop() {
   for (int x = 0; x < 4; x++) {
     val = getFaderValue(x);
     if (val < 255) {
-      usbMIDI.sendControlChange(cc[bank][x], (val), mChan[x]);
+      usbMIDI.sendControlChange(cc[bank][x], (val), mChan[0]);
       //MIDI.sendControlChange(cc[bank][x], (val), mChan[x]);
       threeDigit(val);
     }
