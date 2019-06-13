@@ -256,7 +256,8 @@ int getFaderValue(int pin) {
     tmp = (oldValue[pin] - value);
     if ((tmp >= 8) || (tmp <= -8)) {
       oldValue[pin] = value;
-      return (value >> 3);
+      if (value < 8) return 0; //test
+      else return (value >> 3); //test
     }
   }
   return 255;
