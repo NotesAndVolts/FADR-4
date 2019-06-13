@@ -21,7 +21,7 @@
 // Change ints to bytes - Done!
 // EEProm cleanup - Works!
 // Fix Channel issue - Done!
-// Create Reset function -
+// Create Reset function - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -76,6 +76,7 @@ void setup() {
     showRom();
   }
   delay(2000);
+  faderReset();
 }
 
 void loop() {
@@ -135,9 +136,11 @@ void channelEdit() {
   mydisplay.setIntensity(0, LED_LEVEL);
   delay(100);
 
-  mydisplay.setChar(0, 0, '-', false);
-  mydisplay.setChar(0, 1, '-', false);
-  mydisplay.setChar(0, 2, '-', false);
+  faderReset();
+
+  //  mydisplay.setChar(0, 0, '-', false);
+  //  mydisplay.setChar(0, 1, '-', false);
+  //  mydisplay.setChar(0, 2, '-', false);
 }
 
 void displayMode() {
