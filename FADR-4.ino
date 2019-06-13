@@ -21,7 +21,7 @@
 // Change ints to bytes - Done!
 // EEProm cleanup - Works!
 // Fix Channel issue - Done!
-// Create Reset function - 
+// Create Reset function -
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -66,13 +66,13 @@ void setup() {
 
   initRom2();
   readRom();
-  if (digitalRead(12) == LOW){
+  if (digitalRead(12) == LOW) {
     mydisplay.setDigit(0, 0, 1, true); // Version 1.0.0
     mydisplay.setDigit(0, 1, 0, true);
     mydisplay.setDigit(0, 2, 0, false);
     delay(8000);
   }
-  if (digitalRead(12) == LOW){
+  if (digitalRead(12) == LOW) {
     showRom();
   }
   delay(2000);
@@ -97,6 +97,19 @@ void loop() {
   }
 }
 
+void faderReset() {
+  for (int x = 0; x < 4; x++) {
+    val = getFaderValue(x);
+    if (val < 255) {
+      //usbMIDI.sendControlChange(cc[bank][x], (val), mChan[0]);
+      //MIDI.sendControlChange(cc[bank][x], (val), mChan[x]);
+      //threeDigit(val);
+    }
+  }
+  mydisplay.setChar(0, 0, '-', false);
+  mydisplay.setChar(0, 1, '-', false);
+  mydisplay.setChar(0, 2, '-', false);
+}
 
 void channelEdit() {
   int channelVal = mChan[0];
@@ -175,9 +188,10 @@ void displayMode() {
     }
 
     if (currentMillis - buttonMillis > 8000) {
-      mydisplay.setChar(0, 0, '-', false);
-      mydisplay.setChar(0, 1, '-', false);
-      mydisplay.setChar(0, 2, '-', false);
+      //      mydisplay.setChar(0, 0, '-', false);
+      //      mydisplay.setChar(0, 1, '-', false);
+      //      mydisplay.setChar(0, 2, '-', false);
+      faderReset();
       return;
     }
   }
@@ -334,7 +348,7 @@ void initRom() {
 
 void readRom() {
   mChan[0] = EEPROM.read(1); //Read Midi Channel
-  
+
   for (int bank = 0; bank < 8; bank++) {
     for (int fader = 0; fader < 8; fader++) {
       cc[bank][fader] = EEPROM.read((bank * 8) + (fader + memStart));
@@ -410,7 +424,7 @@ byte checkButton() {
   }
 }
 
-void showRom(){
+void showRom() {
   for (int i = 0; i < 20; i++) {
     threeDigit(EEPROM.read(i));
     delay(2000);
