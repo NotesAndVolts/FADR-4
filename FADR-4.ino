@@ -20,7 +20,7 @@
 // Cleanup - start
 // Change ints to bytes - Done!
 // EEProm cleanup - Works!
-// Fix Channel issue - 
+// Fix Channel issue - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
