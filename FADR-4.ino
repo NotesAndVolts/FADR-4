@@ -22,7 +22,7 @@
 // EEProm cleanup - Works!
 // Fix Channel issue - Done!
 // Create Reset function - Done!
-// Zero error experiments -
+// Zero error experiments - FIXED!
 
 //#include <MIDI.h>
 #include <LedControl.h>
