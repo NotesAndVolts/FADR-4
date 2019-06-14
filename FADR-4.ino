@@ -68,7 +68,7 @@ void setup() {
   initRom2();
   readRom();
   if (digitalRead(12) == LOW) {
-    mydisplay.setDigit(0, 0, 9, true); // Version 1.0.0
+    mydisplay.setDigit(0, 0, 0, true); // Version 1.0.0
     mydisplay.setDigit(0, 1, 0, true);
     mydisplay.setDigit(0, 2, 1, false);
     delay(8000);
