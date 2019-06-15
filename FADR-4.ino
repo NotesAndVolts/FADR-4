@@ -24,6 +24,7 @@
 // Create Reset function - Done!
 // Zero error experiments - FIXED!
 // Added MIDI in buffer - Done!
+// Major Cleanup -
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -156,6 +157,7 @@ void displayMode() {
   byte buttonStat = 0;
 
   buttonMillis = millis();
+  delayMillis = buttonMillis;//TEST
 
   while (1) {
     usbMIDI.read();
@@ -208,7 +210,7 @@ void displayMode() {
 void faderEdit(byte fader) {
   unsigned long delayMillis;
   bool toggle = true;
-  byte ccVal = cc[0][fader - 1];
+  //byte ccVal = cc[0][fader - 1];
   byte temp = 0;
 
   delayMillis = millis();
@@ -244,7 +246,7 @@ void threeDigit(int number) {
 }
 
 void chanDigit(int number) {
-  int first = number / 100;
+  //int first = number / 100;
   int secon = number % 100 / 10;
   int third = number % 10;
   mydisplay.setDigit(0, 2, third, false);
