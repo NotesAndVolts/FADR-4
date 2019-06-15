@@ -24,13 +24,15 @@
 // Create Reset function - Done!
 // Zero error experiments - FIXED!
 // Added MIDI in buffer - Done!
-// Major Cleanup -
+// Major Cleanup - Done!
+// EEProm init to Ch1 cc102-105
+// Added dot display to init
 
 //#include <MIDI.h>
 #include <LedControl.h>
 #include <EEPROM.h>
 
-#define EEPROM_KEY 126
+#define EEPROM_KEY 124
 #define LED_LEVEL 2
 
 #define EDIT_BUTTON 12
@@ -60,11 +62,11 @@ void setup() {
   //pinMode(11, INPUT_PULLUP);
   pinMode(EDIT_BUTTON, INPUT_PULLUP); //Edit Button
   //MIDI.begin(MIDI_CHANNEL_OMNI);
-  mydisplay.shutdown(0, false);  // turns on display
   mydisplay.setIntensity(0, LED_LEVEL); // 15 = brightest
-  mydisplay.setChar(0, 0, 8, false);
-  mydisplay.setChar(0, 1, 8, false);
-  mydisplay.setDigit(0, 2, 8, false);
+  mydisplay.shutdown(0, false);  // turns on display
+  mydisplay.setChar(0, 0, 8, true);
+  mydisplay.setChar(0, 1, 8, true);
+  mydisplay.setDigit(0, 2, 8, true);
 
   initRom();
   readRom();
@@ -277,12 +279,12 @@ void readRom() {
 }
 
 void initRom() {
-  byte key = 1; // first key is 'A'
+  byte key = 102; // First CC Number
 
   if (EEPROM.read(0) != EEPROM_KEY) {
     EEPROM.write(0, EEPROM_KEY); // Key
 
-    EEPROM.write(1, 16); // Set Midi channel to 1
+    EEPROM.write(1, 1); // Set Midi channel to 1
 
     for (int bank = 0; bank < 8; bank++) {
       for (int fader = 0; fader < 8; fader++) {
@@ -290,6 +292,10 @@ void initRom() {
         key++;
       }
     }
+    mydisplay.setChar(0, 0, ' ', true);
+    mydisplay.setChar(0, 1, ' ', true);
+    mydisplay.setChar(0, 2, ' ', true);
+    delay(1000);
   }
 }
 
@@ -345,7 +351,7 @@ byte checkButton() {
 }
 
 void showRom() {
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 10; i++) {
     threeDigit(EEPROM.read(i));
     delay(2000);
   }
