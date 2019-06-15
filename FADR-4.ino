@@ -22,6 +22,7 @@
 // EEProm cleanup - Works!
 // Fix Channel issue - Done!
 // Create Reset function - Done!
+// Zero error experiments - FIXED!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -67,9 +68,9 @@ void setup() {
   initRom2();
   readRom();
   if (digitalRead(12) == LOW) {
-    mydisplay.setDigit(0, 0, 1, true); // Version 1.0.0
+    mydisplay.setDigit(0, 0, 0, true); // Version 1.0.0
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 0, false);
+    mydisplay.setDigit(0, 2, 1, false);
     delay(8000);
   }
   if (digitalRead(12) == LOW) {
@@ -254,8 +255,10 @@ int getFaderValue(int pin) {
     value = analogRead(pins[pin]);
     tmp = (oldValue[pin] - value);
     if ((tmp >= 8) || (tmp <= -8)) {
-      oldValue[pin] = value;
-      return (value >> 3);
+      if (value == 8) oldValue[pin] = value + 1;// Zero Fix
+      else oldValue[pin] = value;
+      if (value < 8) return 0; //test
+      else return (value >> 3); //test
     }
   }
   return 255;
