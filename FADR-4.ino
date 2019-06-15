@@ -1,5 +1,5 @@
 /******************************
-   FADR-4 v0.0.3
+   FADR-4 v0.0.4
    for Teensy LC (www.pjrc.com)
    by Notes and Volts
    www.notesandvolts.com
@@ -28,6 +28,7 @@
 // EEProm init to Ch1 cc102-105
 // Added dot display to init
 // Fix fader edit display - Done!
+// Fix Fader edit zero error - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -72,9 +73,9 @@ void setup() {
   initRom();
   readRom();
   if (digitalRead(EDIT_BUTTON) == LOW) {
-    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.3
+    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.4
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 3, false);
+    mydisplay.setDigit(0, 2, 4, false);
     delay(8000);
   }
   if (digitalRead(EDIT_BUTTON) == LOW) {
@@ -202,7 +203,7 @@ void displayMode() {
 void faderEdit(byte fader) {
   unsigned long delayMillis;
   bool toggle = true;
-  byte temp = 0;
+  byte temp = cc[0][fader - 1];
 
   delayMillis = millis();
   while (checkButton() == 2) {
