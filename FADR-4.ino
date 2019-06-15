@@ -27,6 +27,7 @@
 // Major Cleanup - Done!
 // EEProm init to Ch1 cc102-105
 // Added dot display to init
+// Fix fader edit display - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -170,6 +171,7 @@ void displayMode() {
     }
 
     else if (buttonStat == 2) {
+      threeDigit(cc[bank][faderSelected - 1]);
       faderEdit(faderSelected);
       buttonMillis = millis();
       delayMillis = buttonMillis;
