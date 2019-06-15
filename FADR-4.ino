@@ -1,5 +1,5 @@
 /******************************
-   FADR-8 v1.0
+   FADR-4 v0.0.2
    for Teensy LC (www.pjrc.com)
    by Notes and Volts
    www.notesandvolts.com
@@ -23,6 +23,7 @@
 // Fix Channel issue - Done!
 // Create Reset function - Done!
 // Zero error experiments - FIXED!
+// Added MIDI in buffer - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -68,9 +69,9 @@ void setup() {
   initRom2();
   readRom();
   if (digitalRead(12) == LOW) {
-    mydisplay.setDigit(0, 0, 0, true); // Version 1.0.0
+    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.2
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 1, false);
+    mydisplay.setDigit(0, 2, 2, false);
     delay(8000);
   }
   if (digitalRead(12) == LOW) {
@@ -81,6 +82,7 @@ void setup() {
 }
 
 void loop() {
+  usbMIDI.read();
   switch (checkButton()) {
     case 1:
       displayMode();
@@ -118,6 +120,7 @@ void channelEdit() {
   chanDigit(channelVal);
 
   while (checkButton() != 1) {
+    usbMIDI.read();
     for (int x = 0; x < 4; x++) {
       val = getFaderValue(x);
       if (val < 255) {
@@ -155,6 +158,7 @@ void displayMode() {
   buttonMillis = millis();
 
   while (1) {
+    usbMIDI.read();
     currentMillis = millis();
     buttonStat = checkButton();
     if (buttonStat == 1) {
@@ -209,6 +213,7 @@ void faderEdit(byte fader) {
 
   delayMillis = millis();
   while (checkButton() == 2) {
+    usbMIDI.read();
     if (millis() - delayMillis >= 100) {
       if (toggle == true) mydisplay.setIntensity(0, 0);
       else mydisplay.setIntensity(0, LED_LEVEL);
