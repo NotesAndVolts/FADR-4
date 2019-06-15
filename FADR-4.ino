@@ -1,5 +1,5 @@
 /******************************
-   FADR-4 v0.0.2
+   FADR-4 v0.0.3
    for Teensy LC (www.pjrc.com)
    by Notes and Volts
    www.notesandvolts.com
@@ -33,7 +33,7 @@
 #define EEPROM_KEY 126
 #define LED_LEVEL 2
 //MIDI_CREATE_DEFAULT_INSTANCE();
-// inputs: DIN pin, CLK pin, LOAD pin. number of chips
+
 LedControl mydisplay = LedControl(4, 2, 3, 1);
 
 byte memStart = 2; // Start of Faders in EEPROM
@@ -53,13 +53,9 @@ byte cc[][8] = {
 byte mChan[] = {1, 2, 3, 4, 5, 6, 7, 8};
 byte val = 0;
 
-byte mode = 0;
-
 void setup() {
-  //Serial.begin(38400);
-
-  pinMode(11, INPUT_PULLUP);
-  pinMode(12, INPUT_PULLUP);
+  //pinMode(11, INPUT_PULLUP);
+  pinMode(12, INPUT_PULLUP); //Edit Button
   //MIDI.begin(MIDI_CHANNEL_OMNI);
   mydisplay.shutdown(0, false);  // turns on display
   mydisplay.setIntensity(0, LED_LEVEL); // 15 = brightest
@@ -67,12 +63,12 @@ void setup() {
   mydisplay.setChar(0, 1, 8, false);
   mydisplay.setDigit(0, 2, 8, false);
 
-  initRom2();
+  initRom();
   readRom();
   if (digitalRead(12) == LOW) {
-    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.2
+    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.3
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 2, false);
+    mydisplay.setDigit(0, 2, 3, false);
     delay(8000);
   }
   if (digitalRead(12) == LOW) {
@@ -106,9 +102,6 @@ void faderReset() {
   for (int x = 0; x < 4; x++) {
     val = getFaderValue(x);
     if (val < 255) {
-      //usbMIDI.sendControlChange(cc[bank][x], (val), mChan[0]);
-      //MIDI.sendControlChange(cc[bank][x], (val), mChan[x]);
-      //threeDigit(val);
     }
   }
   mydisplay.setChar(0, 0, '-', false);
@@ -142,10 +135,6 @@ void channelEdit() {
   delay(100);
 
   faderReset();
-
-  //  mydisplay.setChar(0, 0, '-', false);
-  //  mydisplay.setChar(0, 1, '-', false);
-  //  mydisplay.setChar(0, 2, '-', false);
 }
 
 void displayMode() {
@@ -173,7 +162,6 @@ void displayMode() {
       delayMillis = buttonMillis;
       currentMillis = buttonMillis;
       toggle = false;
-      //blinker = 0;
     }
 
     else if (buttonStat == 2) {
@@ -198,9 +186,6 @@ void displayMode() {
     }
 
     if (currentMillis - buttonMillis > 8000) {
-      //      mydisplay.setChar(0, 0, '-', false);
-      //      mydisplay.setChar(0, 1, '-', false);
-      //      mydisplay.setChar(0, 2, '-', false);
       faderReset();
       return;
     }
@@ -210,7 +195,6 @@ void displayMode() {
 void faderEdit(byte fader) {
   unsigned long delayMillis;
   bool toggle = true;
-  //byte ccVal = cc[0][fader - 1];
   byte temp = 0;
 
   delayMillis = millis();
@@ -246,7 +230,6 @@ void threeDigit(int number) {
 }
 
 void chanDigit(int number) {
-  //int first = number / 100;
   int secon = number % 100 / 10;
   int third = number % 10;
   mydisplay.setDigit(0, 2, third, false);
@@ -271,70 +254,6 @@ int getFaderValue(int pin) {
   return 255;
 }
 
-int getFader(int pin) {
-  int value = analogRead(pins[pin]);
-  int tmp = (oldValue[pin] - value);
-  if (tmp >= 8 || tmp <= -8) {
-    value = analogRead(pins[pin]);
-    tmp = (oldValue[pin] - value);
-    if ((tmp >= 8) || (tmp <= -8)) {
-      oldValue[pin] = value;
-      return (pin);
-    }
-  }
-  return 255;
-}
-
-void editMode() {
-  int edit = 0;
-  int editFader = 0;
-  int editValue = 0;
-  mydisplay.clearDisplay(0);
-  mydisplay.setChar(0, 0, 'E', false);
-  while (edit == 0) {
-    for (int x = 0; x < 8; x++) {
-      val = getFader(x);
-      if (val < 255) {
-        editFader = val;
-        mydisplay.setChar(0, 2, (val + 1), false);
-        edit = 1;
-        delay(1000);
-        threeDigit(cc[bank][val]);
-        delay(2000);
-      }
-    }
-  }
-
-  while (edit == 1) {
-    if (digitalRead(12) == LOW) {
-      cc[bank][editFader] = editValue;
-      //EEPROM.write(editFader + 1, editValue);
-      EEPROM.write((bank * 8) + (editFader + memStart), editValue);
-      mydisplay.clearDisplay(0);
-      mydisplay.setChar(0, 2, 5, false);
-      delay(1000);
-      edit = 2;
-      return;
-    }
-    if (digitalRead(11) == LOW) {
-      //cc[editFader] = editValue;
-      mydisplay.clearDisplay(0);
-      mydisplay.setChar(0, 2, 'C', false);
-      delay(1000);
-      edit = 2;
-      return;
-    }
-    for (int x = 0; x < 8; x++) {
-      val = getFaderValue(x);
-      if (val < 255) {
-        editValue = val;
-        threeDigit(val);
-      }
-    }
-  }
-  return;
-}
-
 void editBank() {
   bank++;
   if (bank > 7) bank = 0;
@@ -342,21 +261,6 @@ void editBank() {
   mydisplay.setChar(0, 0, 'B', false);
   mydisplay.setChar(0, 2, (bank + 1), false);
   delay(500);
-}
-
-void initRom() {
-  byte key = 8; // first key is 'A'
-  byte location = 1; // Start of buttons in EEPROM
-
-  if (EEPROM.read(0) != EEPROM_KEY) {
-    EEPROM.write(0, EEPROM_KEY); // Key
-
-    for (int i = 0; i < 8; i++) {
-      EEPROM.write(location, key);
-      key++;
-      location = location + 1;
-    }
-  }
 }
 
 void readRom() {
@@ -369,7 +273,7 @@ void readRom() {
   }
 }
 
-void initRom2() {
+void initRom() {
   byte key = 1; // first key is 'A'
 
   if (EEPROM.read(0) != EEPROM_KEY) {
