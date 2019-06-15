@@ -32,6 +32,9 @@
 
 #define EEPROM_KEY 126
 #define LED_LEVEL 2
+
+#define EDIT_BUTTON 12
+
 //MIDI_CREATE_DEFAULT_INSTANCE();
 
 LedControl mydisplay = LedControl(4, 2, 3, 1);
@@ -55,7 +58,7 @@ byte val = 0;
 
 void setup() {
   //pinMode(11, INPUT_PULLUP);
-  pinMode(12, INPUT_PULLUP); //Edit Button
+  pinMode(EDIT_BUTTON, INPUT_PULLUP); //Edit Button
   //MIDI.begin(MIDI_CHANNEL_OMNI);
   mydisplay.shutdown(0, false);  // turns on display
   mydisplay.setIntensity(0, LED_LEVEL); // 15 = brightest
@@ -65,13 +68,13 @@ void setup() {
 
   initRom();
   readRom();
-  if (digitalRead(12) == LOW) {
+  if (digitalRead(EDIT_BUTTON) == LOW) {
     mydisplay.setDigit(0, 0, 0, true); // Version 0.0.3
     mydisplay.setDigit(0, 1, 0, true);
     mydisplay.setDigit(0, 2, 3, false);
     delay(8000);
   }
-  if (digitalRead(12) == LOW) {
+  if (digitalRead(EDIT_BUTTON) == LOW) {
     showRom();
   }
   delay(2000);
@@ -299,7 +302,7 @@ byte checkButton() {
 
   switch (buttonState) {
     case 0: // Nothing
-      if (digitalRead(12) == LOW) {
+      if (digitalRead(EDIT_BUTTON) == LOW) {
         buttonState = 1;
         buttonMillis = millis();
       }
@@ -308,14 +311,14 @@ byte checkButton() {
     case 1: // Test
       currentMillis = millis();
       if (currentMillis - buttonMillis > debounce) {
-        if (digitalRead(12) == LOW) buttonState = 2;
+        if (digitalRead(EDIT_BUTTON) == LOW) buttonState = 2;
         else buttonState = 0;
       }
       return 0;
       break;
     case 2: // Valid
       currentMillis = millis();
-      if (digitalRead(12) == LOW) {
+      if (digitalRead(EDIT_BUTTON) == LOW) {
         if (currentMillis - buttonMillis > longPress) {
           buttonState = 3;
           return 2;
@@ -328,7 +331,7 @@ byte checkButton() {
       return 0;
       break;
     case 3: // Long
-      if (digitalRead(12) == HIGH) {
+      if (digitalRead(EDIT_BUTTON) == HIGH) {
         buttonState = 0;
         return 0;
       }
