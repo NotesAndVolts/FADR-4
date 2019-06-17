@@ -1,5 +1,5 @@
 /******************************
-   FADR-4 v0.0.4
+   FADR-4 v0.0.5
    for Teensy LC (www.pjrc.com)
    by Notes and Volts
    www.notesandvolts.com
@@ -29,6 +29,7 @@
 // Added dot display to init
 // Fix fader edit display - Done!
 // Fix Fader edit zero error - Done!
+// Add USB Name FADR4 - Done!
 
 //#include <MIDI.h>
 #include <LedControl.h>
@@ -73,9 +74,9 @@ void setup() {
   initRom();
   readRom();
   if (digitalRead(EDIT_BUTTON) == LOW) {
-    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.4
+    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.5
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 4, false);
+    mydisplay.setDigit(0, 2, 5, false);
     delay(8000);
   }
   if (digitalRead(EDIT_BUTTON) == LOW) {
