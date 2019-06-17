@@ -1,5 +1,5 @@
 /******************************
-   FADR-4 v0.0.5
+   FADR-4 v1.0.0
    for Teensy LC (www.pjrc.com)
    by Notes and Volts
    www.notesandvolts.com
@@ -12,30 +12,11 @@
    CPU Speed: "48 Mhz"
  **************************************/
 
-// Midi channel edit - Works!
-// cc edit - Works!
-// Fix CC edit - Works!
-// startup info - Works!
-// EEprom read function - Works!
-// Cleanup - start
-// Change ints to bytes - Done!
-// EEProm cleanup - Works!
-// Fix Channel issue - Done!
-// Create Reset function - Done!
-// Zero error experiments - FIXED!
-// Added MIDI in buffer - Done!
-// Major Cleanup - Done!
-// EEProm init to Ch1 cc102-105
-// Added dot display to init
-// Fix fader edit display - Done!
-// Fix Fader edit zero error - Done!
-// Add USB Name FADR4 - Done!
-
 //#include <MIDI.h>
 #include <LedControl.h>
 #include <EEPROM.h>
 
-#define EEPROM_KEY 124
+#define EEPROM_KEY 200
 #define LED_LEVEL 2
 
 #define EDIT_BUTTON 12
@@ -74,9 +55,9 @@ void setup() {
   initRom();
   readRom();
   if (digitalRead(EDIT_BUTTON) == LOW) {
-    mydisplay.setDigit(0, 0, 0, true); // Version 0.0.5
+    mydisplay.setDigit(0, 0, 1, true); // Version 1.0.0
     mydisplay.setDigit(0, 1, 0, true);
-    mydisplay.setDigit(0, 2, 5, false);
+    mydisplay.setDigit(0, 2, 0, false);
     delay(8000);
   }
   if (digitalRead(EDIT_BUTTON) == LOW) {
@@ -355,7 +336,7 @@ byte checkButton() {
 }
 
 void showRom() {
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 6; i++) {
     threeDigit(EEPROM.read(i));
     delay(2000);
   }
