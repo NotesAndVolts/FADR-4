@@ -12,7 +12,6 @@
    CPU Speed: "48 Mhz"
  **************************************/
 
-//#include <MIDI.h>
 #include <LedControl.h>
 #include <EEPROM.h>
 
@@ -20,8 +19,6 @@
 #define LED_LEVEL 2
 
 #define EDIT_BUTTON 12
-
-//MIDI_CREATE_DEFAULT_INSTANCE();
 
 LedControl mydisplay = LedControl(4, 2, 3, 1);
 
@@ -43,9 +40,7 @@ byte mChan[] = {1, 2, 3, 4, 5, 6, 7, 8};
 byte val = 0;
 
 void setup() {
-  //pinMode(11, INPUT_PULLUP);
   pinMode(EDIT_BUTTON, INPUT_PULLUP); //Edit Button
-  //MIDI.begin(MIDI_CHANNEL_OMNI);
   mydisplay.setIntensity(0, LED_LEVEL); // 15 = brightest
   mydisplay.shutdown(0, false);  // turns on display
   mydisplay.setChar(0, 0, 8, true);
@@ -81,7 +76,6 @@ void loop() {
     val = getFaderValue(x);
     if (val < 255) {
       usbMIDI.sendControlChange(cc[bank][x], (val), mChan[0]);
-      //MIDI.sendControlChange(cc[bank][x], (val), mChan[x]);
       threeDigit(val);
     }
   }
