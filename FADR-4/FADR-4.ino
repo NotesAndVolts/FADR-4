@@ -43,13 +43,17 @@ void setup() {
   pinMode(EDIT_BUTTON, INPUT_PULLUP); //Edit Button
   mydisplay.setIntensity(0, LED_LEVEL); // 15 = brightest
   mydisplay.shutdown(0, false);  // turns on display
-  mydisplay.setChar(0, 0, 8, true);
-  mydisplay.setChar(0, 1, 8, true);
-  mydisplay.setDigit(0, 2, 8, true);
+  mydisplay.setRow(0, 0, 0x76);
+  mydisplay.setRow(0, 1, 0x77);
+  mydisplay.setRow(0, 2, 0x3e);
 
   initRom();
   readRom();
   if (digitalRead(EDIT_BUTTON) == LOW) {
+    mydisplay.setChar(0, 0, 8, true);
+    mydisplay.setChar(0, 1, 8, true);
+    mydisplay.setDigit(0, 2, 8, true);
+    delay(2000);
     mydisplay.setDigit(0, 0, 1, true); // Version 1.0.0
     mydisplay.setDigit(0, 1, 0, true);
     mydisplay.setDigit(0, 2, 0, false);
